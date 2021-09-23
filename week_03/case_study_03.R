@@ -57,9 +57,9 @@ ggsave(plot1,width=15,units="in")
 
 
 #????Prepare data for plot2
-gapminder_filtered %>% group_by(continent,year)
-gapminder_continent <- gdpPercapweighted = weighted.mean(x = gdpPercap, w = pop)
-pop = sum(as.numeric(pop))
+gapminder_continent <-gapminder_filtered %>% group_by(continent,year) %>%
+                     summarize(gdpPercapweighted = weighted.mean(x = gdpPercap, w = pop),
+                     pop = sum(as.numeric(pop)))
 
 #????plot2
 ggplot(gapminder)+geom_line+geom_point()+geom_line(data=newdata)+geom_point(data=newdata)+facet_wrap+theme_bw()+labs()
