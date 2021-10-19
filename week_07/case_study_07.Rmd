@@ -4,6 +4,7 @@ author: Sun Ho Hwang
 date: August 1, 2020
 output: github_document
 ---
+
  #download library
 
 library(tidyverse)
@@ -28,4 +29,5 @@ ggplot(world,aes(gdpPercap, color=continent,fill=continent))+geom_density(alpha=
   
 
 
-#reprex(venue="gh")
+reprex(venue="gh")
+
