@@ -8,41 +8,26 @@ output:
   powerpoint_presentation: default
   word_document: default
 ---
-```{r}
-library(tidyverse)
-Data<-read_table("ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt",skip=57, col_names=c("year","mean","unc"))
-
-view(Data)
-
-#column weird: how should I push?
-
-#column names in 
-
-?col_names
-
-new2=Data
-
-#ggplot
-library(tidyr)
-library(dplyr)
-ggplot(data=new2, aes(x = year  , y=mean )) + geom_line()
-
-
-#add table
+```{r,results='hide',message=FALSE, echo=F}
+library(tidyverse) 
 library(knitr)
-library(tidyverse)
+library(kableExtra)  
+URL<-"ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt"
+Data<-read_table(URL,skip=57,col_names=c("year","mean","unc") ) 
+```
 
-new=data %>%
-  arrange(desc(year)) %>%
-  filter(year>2015) 
-kable<-kable(new,"simple", caption="Top Five Annual Mean Carbon Dioxide Concentrations at Mona Loa") 
+```{r,results='hide',message=FALSE, echo=F}
+ggplot(data=Data,aes(x=year,y=mean))+geom_line(col="red")
+top5<-Data %>%
+  arrange(desc(mean))%>%
+  top_n(mean,n=5)
+knitr::kable(top5)
+```
 
-
-
-#YAML
-
-#rmarkdown::render("case_study_08.Rmd", output_format = "all"), do in console
-
+```{r}
+top5 %>% 
+  kable() %>% 
+  as_image(width = 20,file = "table.png")
 ```
 
 
