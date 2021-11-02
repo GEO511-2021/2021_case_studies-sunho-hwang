@@ -22,7 +22,7 @@ This map shows the median income level across Buffalo city. This project will al
 <Education Attainment Distribution Map>
 Link: http://www.edgetech-us.com/Map/EduLvls.htm
 
-![Example2](http://www.edgetech-us.com/Map/EduLvls.htm)
+![Example2]http://www.edgetech-us.com/Map/EduLvls.htm
 
 
 
