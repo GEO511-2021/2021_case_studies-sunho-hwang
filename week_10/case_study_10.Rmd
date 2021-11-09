@@ -4,4 +4,16 @@ author: Sun Ho Hwang
 date: November 9, 2021
 output: github_document
 ---
- 
+#load packages
+install.packages("rasterVis")
+
+library(raster)
+library(sp)
+library(rasterVis)
+library(rgdal)
+library(ggmap)
+library(tidyverse)
+library(knitr)
+library(ncdf4)
+
+#download data
