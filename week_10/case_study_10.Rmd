@@ -1,7 +1,7 @@
 ---
 title: "Case Study 10"
-author: Your Name
-date: August 1, 2020
+author: Sun Ho Hwang
+date: November 9, 2021
 output: github_document
 ---
  
