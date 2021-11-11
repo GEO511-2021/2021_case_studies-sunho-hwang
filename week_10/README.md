@@ -270,15 +270,27 @@ tmonth<- as.numeric(format(getZ(lst),"%m"))
 
 lst_month <- stackApply(lst,tmonth,fun=mean)
 
+#raster object:lst
+#indice:contain integer,layers to be combined
+#fun: function that returns single value
+
+
+
 #Step3
 #set the names of layers to months
 
 names(lst_month)=month.name
 
+
 #Step4
 #plot the map for each month
 
 gplot(lst_month)+geom_raster(aes(fill=value)) + facet_wrap(~variable) + coord_equal()+ theme(legend.position="right") + scale_fill_continuous()
+
+
+
+#
+
 
 #Step5
 #Calculate monthly mean for entire image
