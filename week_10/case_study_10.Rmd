@@ -3,6 +3,7 @@ title: "Case Study 10"
 author: Sun Ho Hwang
 date: November 9, 2021
 output: github_document
+  keep_md:true
 ---
 #load packages
 install.packages("rasterVis")
