@@ -18,14 +18,20 @@ library(ncdf4)
 #download data
 
  # Create a folder to hold the downloaded data
+ 
 ##dir.create("data",showWarnings = F) #create a folder to hold the data
 
 ##lulc_url="https://github.com/adammwilson/DataScienceData/blob/master/inst/extdata/appeears/MCD12Q1.051_aid0001.nc?raw=true"
+
 ##lst_url="https://github.com/adammwilson/DataScienceData/blob/master/inst/extdata/appeears/MOD11A2.006_aid0001.nc?raw=true"
+
 ## 
 ## # download them
-## download.file(lulc_url,destfile="data/MCD12Q1.051_aid0001.nc", mode="wb")
-## download.file(lst_url,destfile="data/MOD11A2.006_aid0001.nc", mode="wb")
+
+##download.file(lulc_url,destfile="data/MCD12Q1.051_aid0001.nc", mode="wb")
+
+##download.file(lst_url,destfile="data/MOD11A2.006_aid0001.nc", mode="wb")
+
 ##
 
 #load data to R
@@ -41,6 +47,7 @@ plot(lulc)
 
 #Pick one year
 lulc=lulc[[13]]
+
 
 plot(lulc)
 
@@ -75,14 +82,17 @@ lcd=data.frame(
 
 
 # colors from https://lpdaac.usgs.gov/about/news_archive/modisterra_land_cover_types_yearly_l3_global_005deg_cmg_mod12c1
+
 kable(head(lcd))
 
 #Convert LULC raster into a 'factor' (categorical) raster
 
 # convert to raster (easy)
+
 lulc=as.factor(lulc)
 
 # update the RAT with a left join
+
 levels(lulc)=left_join(levels(lulc)[[1]],lcd)
 
 #plot
@@ -125,6 +135,7 @@ rev(as.integer(intToBits(65)[1:8]))
 
 
 ## set up data frame to hold all combinations
+
 QC_Data <- data.frame(Integer_Value = 0:255,
 Bit7 = NA, Bit6 = NA, Bit5 = NA, Bit4 = NA,
 Bit3 = NA, Bit2 = NA, Bit1 = NA, Bit0 = NA,
@@ -132,6 +143,7 @@ QA_word1 = NA, QA_word2 = NA, QA_word3 = NA,
 QA_word4 = NA)
 
 ## 
+
 for(i in QC_Data$Integer_Value){
 AsInt <- as.integer(intToBits(i)[1:8])
 QC_Data[i+1,2:9]<- AsInt[8:1]
@@ -198,26 +210,43 @@ tdates=names(lst)%>%
 names(lst)=1:nlayers(lst)
 lst=setZ(lst,tdates)
 
-#Part 1
+#Part 1_Extract Time Series for point
+
+#step 1
+#define a new spatial point
 
 lw=SpatialPoints(data.frame(x= -78.791547,y=43.007211))
+
 #step2
+#set the projection of your point
+
 projection(lw) <- "+proj=longlat"
+
 #step3
+#transform the point of projection to raster
+
 lw=spTransform(lw,crs(lst))
+
+#crs_coordinate reference system
 #step4
+#extract lst and transpose from wide matrix to vector
+
+
 extraction<-raster::extract(lst,lw,buffer=1000,fun=mean,na.rm=T) %>%
   t()
 
 
 
 #Step 5
+#
 
 df<-bind_cols(extraction,getZ(lst))
+
 df
+
 names(df) <-c("temp","date")
 
-
+df
 
 #Step 6
 
@@ -229,14 +258,17 @@ ggplot(aes(x=date,y=temp)) + geom_point() + geom_smooth(n=nrow(df),span=0.01)
 #Part2
 
 #Step1
+#make a variable t month, covert dates to month
 
 tmonth<- as.numeric(format(getZ(lst),"%m"))
 
 #Step2
+#use stackApply to summarize mean value per month
 
 lst_month <- stackApply(lst,tmonth,fun=mean)
 
 #Step3
+
 names(lst_month)=month.name
 
 
