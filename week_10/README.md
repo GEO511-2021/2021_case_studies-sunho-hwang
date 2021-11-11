@@ -228,6 +228,7 @@ projection(lw) <- "+proj=longlat"
 lw=spTransform(lw,crs(lst))
 
 #crs_coordinate reference system
+
 #step4
 #extract lst and transpose from wide matrix to vector
 
@@ -238,7 +239,8 @@ extraction<-raster::extract(lst,lw,buffer=1000,fun=mean,na.rm=T) %>%
 
 
 #Step 5
-#
+#use getZ(lst) to extract each layer with dates
+#combine with dataframe above
 
 df<-bind_cols(extraction,getZ(lst))
 
@@ -253,12 +255,13 @@ df
 df %>%
 ggplot(aes(x=date,y=temp)) + geom_point() + geom_smooth(n=nrow(df),span=0.01)
 
-
+#n:number of points to evaluate
 
 #Part2
+#Calculate monthly mean land surface temperature
 
 #Step1
-#make a variable t month, covert dates to month
+#make a variable t month, convert dates to month
 
 tmonth<- as.numeric(format(getZ(lst),"%m"))
 
@@ -268,13 +271,18 @@ tmonth<- as.numeric(format(getZ(lst),"%m"))
 lst_month <- stackApply(lst,tmonth,fun=mean)
 
 #Step3
+#set the names of layers to months
 
 names(lst_month)=month.name
 
+#Step4
+#plot the map for each month
 
 gplot(lst_month)+geom_raster(aes(fill=value)) + facet_wrap(~variable) + coord_equal()+ theme(legend.position="right") + scale_fill_continuous()
 
-#Step4
+#Step5
+#Calculate monthly mean for entire image
+
 cellStats(lst_month,mean)
 
 
