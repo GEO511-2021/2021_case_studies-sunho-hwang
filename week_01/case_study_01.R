@@ -1,21 +1,18 @@
+data("iris")
 
-#download library
+x=iris$Petal.Length
 
-library(tidyverse)
-library(reprex)
-library(sf)
-library(spData)
-data(world)
+mean(iris$Petal.Length)
+
+hist(x)
+
+library(ggplot2)
+
+ggplot(iris,aes(x=Petal.Length,fill=Species))+geom_histogram(binwidth=0.5,position="stack",color=NA,alpha=0.8)    
+
+# aes decides x or y, fill=species means fill differently by species, position: stack on top,alpha: how transparent       
 
 
-view(world)
 
-#code
+esquisser(): you can find code  
 
-ggplot(world,aes(x=gdpPercap, y=continent, color=continent))+
-  geom_density(alpha=0.5,color=F)
-
-#add 3 lines
-#1.added fill=continent,2.got rid of y=continent to make y=density 3.xlab() and ylab()
-
-ggplot(world,aes(gdpPercap, color=continent,fill=continent))+geom_density(alpha=0.5,color=F)+xlab("GDP Per Capita")+ylab("Density")
