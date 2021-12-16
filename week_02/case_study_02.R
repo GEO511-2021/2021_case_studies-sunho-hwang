@@ -1,3 +1,6 @@
+#Case study 2
+
+
 library(tidyverse)
 
 #data
