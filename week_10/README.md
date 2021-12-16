@@ -230,7 +230,7 @@ lw=spTransform(lw,crs(lst))
 #crs_coordinate reference system
 
 #step4
-#extract lst and transpose from wide matrix to vector
+#extract lst for location and transpose from wide matrix to vector
 
 
 extraction<-raster::extract(lst,lw,buffer=1000,fun=mean,na.rm=T) %>%
@@ -287,9 +287,6 @@ names(lst_month)=month.name
 
 gplot(lst_month)+geom_raster(aes(fill=value)) + facet_wrap(~variable) + coord_equal()+ theme(legend.position="right") + scale_fill_continuous()
 
-
-
-#
 
 
 #Step5
