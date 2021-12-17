@@ -16,7 +16,7 @@ getDoParWorkers() # check registered cores
 
 library(tidycensus)
 
-census_api_key("de66b80e57fd740d87d1af03c5c306086b4f17fa")
+census_api_key("")
 
 #download data
 
