@@ -1,7 +1,130 @@
 ---
 title: "Case Study 06"
-author: Your Name
-date: August 1, 2020
+author: Sun Ho Hwang
+date: August 1, 2020\\\\
 output: github_document
 ---
- 
+ Upload Packages
+
+library(raster)
+
+library(sp)
+
+library(spData)
+
+library(tidyverse)
+
+library(sf)
+
+library(dplyr)
+
+#Download world climate data from spData package
+
+data(world) 
+
+tmax_monthly <- getData(name = "worldclim", var="tmax", res=10,path="C:/Users/sunho/OneDrive")
+
+#this did not work because of korean so I mentioned path without Korean
+
+library(ncdf4)
+
+download.file("https://crudata.uea.ac.uk/cru/data/temperature/absolute.nc","crudata.nc")
+
+tmean=raster("crudata.nc")
+
+
+
+
+
+
+
+data(world)
+tmax_monthly <- getData(name = "worldclim", var="tmax", res=10)
+view(world)
+
+
+
+
+
+library(ncdf4)
+#there is no package as ncdf4
+#install ncdf4
+install.packages('ncdf4')
+library(ncdf4)
+download.file("https://crudata.uea.ac.uk/cru/data/temperature/absolute.nc","crudata.nc")
+
+view("https://crudata.uea.ac.uk/cru/data/temperature/absolute.nc","crudata.nc")
+
+tmean=raster(system.file"crudata.nc")
+
+
+#Prepare country polygon data 
+view(world)
+
+world <-world %>%
+      filter(!continent=="Antarctica")
+
+view(world)
+#change to sp format
+as(world,"Spatial")
+
+#download climate data
+tmax_monthly = getData(name = "worldclim", var="tmax", res=10,path="C:/Users/sunho/OneDrive")
+
+
+#layers? go to website
+
+plot(tmax_monthly)
+
+#divide 10 so mutiply 0.1
+?gain()
+
+gain(tmax_monthly) <- .1
+
+#tmax_monthly
+
+plot(tmax_monthly)
+
+#tmax_annual
+
+tmax_annual <- max(tmax_monthly)
+
+plot(tmax_annual)
+
+# name tamx_annual to tmax
+
+names(tmax_annual) <- "tmax"
+
+#3.Calculate maximum temperature
+
+library(ggplot2)
+
+tmax_1<-raster::extract(tmax_annual,world,fun=max,na.rm=T, 
+       small=T, sp=T)%>%
+       st_as_sf()
+
+
+
+
+
+
+
+#map
+
+tmax_final <- ggplot() + geom_sf(data=tmax_1,aes(fill=tmax)) + scale_fill_viridis_c(name="Annual\nMaximum\nTemperature (C)")+theme(legend.position = 'bottom')
+
+
+tmax_final
+
+
+#dplyr to get hottest country in each continent
+
+final<-tmax_final%>%
+      st_set_geometry(NULL)%>%
+      group_by(continent)%>%
+      select(name_long, continent, tmax)%>%
+      top_n(1)%>%
+     arrange(desc(tmax))
+
+
+
