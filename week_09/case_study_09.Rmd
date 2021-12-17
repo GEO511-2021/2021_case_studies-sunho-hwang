@@ -1,7 +1,7 @@
 ---
-title: "One Script Many Products"
+title: "Case Study 9"
 author: "Sun Ho Hwang"
-date: "10/26/2021"
+date: "11/2/2021"
 output: 
  html_document: default
   github_document: default
@@ -9,25 +9,78 @@ output:
   word_document: default
 ---
 ```{r,results='hide',message=FALSE, echo=F}
-library(tidyverse) 
-library(knitr)
-library(kableExtra)  
-URL<-"ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_annmean_mlo.txt"
-Data<-read_table(URL,skip=57,col_names=c("year","mean","unc") ) 
+#library and data
+
+library(sf)
+library(tidyverse)
+library(ggmap)
+library(rnoaa)
+library(spData)
+data(world)
+data(us_states)
+
+#download storm data
+
+# Download zipped data from noaa with storm track information
+
+dataurl="https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r00/access/shapefile/IBTrACS.NA.list.v04r00.points.zip"
+
+tdir=tempdir()
+
+download.file(dataurl,destfile=file.path(tdir,"temp.zip"))
+
+unzip(file.path(tdir,"temp.zip"),exdir = tdir)
+
+list.files(tdir)
+
+storm_data <- read_sf(list.files(tdir,pattern=".shp",full.names = T))
+
+
 ```
 
 ```{r,results='hide',message=FALSE, echo=F}
-ggplot(data=Data,aes(x=year,y=mean))+geom_line(col="red")
-top5<-Data %>%
-  arrange(desc(mean))%>%
-  top_n(mean,n=5)
-knitr::kable(top5)
+#step 2
+
+head(storm_data)
+glimpse(storm_data)
+
+
+storms<-storm_data %>%
+  filter(year>1950) %>%
+  mutate_if(is.numeric, function(x) ifelse(x==-999.0,NA,x)) %>%
+  mutate(decade=(floor(year/10)*10)) 
+  
+region <-st_bbox(storm_2)
+
+#step 3
+graph<-ggplot()+
+  geom_sf(data = world, inherit.aes = F)+
+  facet_wrap(~decade)+
+  stat_bin2d(data=storms, aes(y=st_coordinates(storms)[,2], x=st_coordinates(storms)[,1]),bins=100)+
+  scale_fill_distiller(palette="YlOrRd", trans="log", direction=-1, breaks = c(1,10,100,1000))+
+  coord_sf(ylim=region[c(2,4)], xlim=region[c(1,3)])
+
+
+graph
+
+
+#step 4
+
+states <- st_transform(us_states, st_crs(storms))%>% 
+  select(state = NAME)
+
+storm_states <- st_join(storms, states, join = st_intersects,left = F) %>%
+group_by(state) %>%
+summarize(storms=length(unique(NAME))) %>%
+arrange(desc(storms)) %>%
+slice(1:5)
+
+
+
 ```
 
 ```{r}
-top5 %>% 
-  kable() %>% 
-  as_image(width = 20,file = "table.png")
+
 ```
 
 
